@@ -33,7 +33,7 @@ def update_user(db:Session, user_id: int, user_update: UserUpdate):
     user_data = user_update.dict()
 
     for key, value in user_data.items():
-        setattr(db_user, key, value) # setattribute python 기본 내장 함수
+        setattr(db_user, key, value) # setattribute - python 기본 내장 함수
     
     db.commit()
     # 이걸 안하면 return db_user가 이전 데이터를 가져옴

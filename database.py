@@ -19,7 +19,7 @@ SessionLocal = sessionmaker(bind=engine)
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 ASYNC_SQLALCHEMY_DATABASE_URL = 'mysql+aiomysql://root:oz-password@localhost/oz-fastapi'
 engine = create_async_engine(ASYNC_SQLALCHEMY_DATABASE_URL) 
-AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession)
+AsyncSessionLocal = sessionmaker(bind = engine, class_=AsyncSession)
 
 from sqlalchemy.ext.declarative import declarative_base
 # 나중에 이 베이스를 각각의 모델이 상속 받도록 함, 테이블 매핑, 컬럼 생성 등 
