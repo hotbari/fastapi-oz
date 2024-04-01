@@ -5,19 +5,30 @@ from models import User, Item
 # pip install bctypt
 import bcrypt 
 
+from schemas import UserCreate, UserUpdate
+
+
+
 # User - CRUD
-# db 먼저 연결 - db:Session, user:UserCreate
+# db 먼저 연결 - db:Session, user:UserCreate(스키마)
+# user:UserCreate가 딕셔너리 형태라 스키마 구조에서 충돌이 일어날 수 있기 때문에  orm_mode = True 옵션 설정
 def create_user(db:Session, user:UserCreate):
     # 해쉬화
-    hashed_password = bcrypt.hashpw(user.password)
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
     db_user = User(email=user.email, hashed_password=hashed_password)
     db.add(db_user) # 여기까지 로컬에서 작업한 것
     db.commit() # 로컬 작업물을 커밋하여 반영
 
     return db_user # object->json 알아서 역직렬화 해줌
 
-def get_user(db:Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).fisrt() # 쿼리 결과의 첫번째 값을 리턴
+# id기반
+def get_user_id(db:Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first() # 쿼리 결과의 첫번째 값을 리턴
+
+# email 기반
+def get_user_email(db:Session, user_email: str):
+    return db.query(User).filter(User.email == user_email).first() 
+
 
 # skip, limit 옵션으로 orm에서 페이지네이션 기능 
 def get_users(db:Session, skip: int=0, limit: int=10): 
