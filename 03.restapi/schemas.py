@@ -4,20 +4,27 @@ from pydantic import BaseModel
 # from models import Item
 # 스키마 안에서는 import 하지 않고 만들어줌
 
-from typing import List
+from typing import List, Optional
 
-
-
-
-class Item(BaseModel):
-    id: int
-    owner_id: int
+class ItemBase(BaseModel):
     title: str
     description: str
+
+
+class Item(ItemBase):
+    id: int
+    owner_id: int
 
     # ORM 방식으로 사용하기 위해 설정
     class Config:
         orm_mode = True
+
+class ItemCreate(ItemBase):
+    pass
+
+class ItemUpdate(ItemBase):
+    title: Optional[str]=None
+    description: Optional[str]=None
 
 
 # email을 따로 분리

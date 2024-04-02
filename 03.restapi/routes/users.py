@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 import crud_orm
 from typing import Union
 
-router = APIRouter()
+router = APIRouter(tags=['User'])
 
 # api/v1/user
 # CRUD + 데코레이터

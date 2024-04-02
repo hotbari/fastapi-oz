@@ -5,7 +5,7 @@ from models import User, Item
 # pip install bctypt
 import bcrypt 
 
-from schemas import UserCreate, UserUpdate
+from schemas import UserCreate, UserUpdate, ItemCreate, ItemUpdate
 
 
 
@@ -64,3 +64,42 @@ def delete_user(db:Session, user_id: int):
     return db_user # 아직 refresh 안해서 메모리상에는 남아있고 if문 등 코드로 delete success 등 만들어주면 댐
 
 # Item - CRUD
+def item_create(db:Session, item:ItemCreate, owner_id:int):
+    ## ** -> key, value 구분
+    db_item = Item(**item.dict(), owner_id=owner_id)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    
+    return db_item
+
+
+def get_item(db:Session, item_id:int):
+    return db.query(Item).filter(Item.id == item_id).first() # get으로 하면 try: except: 예외처리 필수
+
+def get_items(db:Session, skip: int=0, limit: int=10):
+    return db.query(Item).order_by(Item.id.desc()).offset(skip).limit(limit).all()
+
+def update_item(db: Session, item_update: ItemUpdate, item_id:int):
+    db_item = get_item(db, item_id)
+
+    if not db_item:
+        return None
+    
+    for key,value in item_update.dict().items():
+        setattr(db_item, key, value)
+
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+def delete_item(db:Session, item_id: int):
+    db_item = get_item(db, item_id)
+
+    if not db_item:
+        return None
+    
+    db.delete(db_item)
+    db.commit()
+
+    return True
